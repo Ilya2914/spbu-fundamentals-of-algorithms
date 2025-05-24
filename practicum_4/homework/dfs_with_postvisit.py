@@ -21,7 +21,7 @@ class DfsViaLifoQueueWithPostvisit(GraphTraversal):
             if node not in self.visited:
                 self.previsit(node)
                 self.visited.add(node)
-                for n_neigh in G.neighbors(node):
+                for n_neigh in self.G.neighbors(node):
                     if n_neigh not in self.visited:
                         stack.append(n_neigh)
                 for n in self.visited:
