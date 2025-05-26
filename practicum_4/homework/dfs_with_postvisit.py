@@ -12,22 +12,25 @@ from src.common import AnyNxGraph
 
 class DfsViaLifoQueueWithPostvisit(GraphTraversal):
     def run(self, node: Any) -> None:
-        stack = [node]
-        vis_post = []
+        self.visited = set()
+        stack = [(node, False)]  # (node, postvisit_flag)
 
-            
-        while len(stack) > 0:
-            node = stack.pop()
-            if node not in self.visited:
-                self.previsit(node)
-                self.visited.add(node)
-                for n_neigh in self.G.neighbors(node):
-                    if n_neigh not in self.visited:
-                        stack.append(n_neigh)
-                for n in self.visited:
-                    if n not in vis_post and all((n_neigh in self.visited for n_neigh in self.G.neighbors(n))):
-                        self.postvisit(n)
-                        vis_post.append(n)
+        while stack:
+            node, post = stack.pop()
+            if post:
+                # Поствизит
+                self.postvisit(node)
+            else:
+                if node not in self.visited:
+                    # Предвизит
+                    self.previsit(node)
+                    self.visited.add(node)
+                    # Запланировать поствизит после обхода соседей
+                    stack.append((node, True))
+                    # Добавляем соседей для предвизита
+                    for nbr in reversed(list(self.G.neighbors(node))):
+                        if nbr not in self.visited:
+                            stack.append((nbr, False))
 
                     
 
